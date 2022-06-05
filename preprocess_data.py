@@ -95,21 +95,8 @@ def add_dummy(X):
 	return np.insert(X, 0, dummy, axis=1)
 
 if __name__ == '__main__':
-	filename = 'ramen-ratings.csv'
-	data = load_data(filename)
-	#print(data[0])
-	X, Y = split_X_Y(data)
-	#print(X[0], "\n", Y[0])
-	continuous_X = convert_X_to_continuous(X)
-
-	discrete_X_train, discrete_X_valid = split_train_valid(X)
-	cont_X_train, cont_X_valid = split_train_valid(continuous_X)
-	Y_train, Y_valid = split_train_valid(Y)
-
-	mean, std = cont_X_train, cont_X_valid
-	
-
-	#for testing
+	#You can use this for testing the preprocess_data functions
+	pass
 	'''X = np.array([[1, 2, 3],
 					[4, 5, 6]])'''
 	
