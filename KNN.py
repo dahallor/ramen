@@ -1,47 +1,42 @@
 import numpy as np
 from preprocess_data import *
+from valid_statistics import *
 from scipy.stats import mode
 
 class KNN:
 
-    def __init__(self, k, X_train, Y_train, X_valid, Y_valid):
-        self.k = k
+    def __init__(self, X_train, Y_train, X_valid, Y_valid):
         self.X_train = X_train
         self.Y_train = Y_train
         self.X_valid = X_valid
         self.Y_valid = Y_valid
-        self.validate()
     
-    def validate(self):
-        accuracy = 0
+    def validate(self, k):
+        Y_pred = []
         for i in range(len(self.X_valid)):
             x_valid = self.X_valid[i]
             y_valid = self.Y_valid[i]
             distances = self.calc_distances(x_valid)
-            k_nearest_indices = self.get_k_nearest(distances)
-            y_pred = self.get_mean(k_nearest_indices)
-            if y_pred == y_valid:
-                accuracy += 1
-        accuracy = accuracy / len(self.X_valid)
-        return accuracy
+            k_nearest_indices = self.get_k_nearest(distances, k)
+            y_pred = self.get_mean(k_nearest_indices, k)
+            Y_pred.append(y_pred)
+        mape = MAPE(self.Y_valid, Y_pred)
+        return mape
 
     #return indices
-    def get_k_nearest(self, distances):
-        k_nearest_indices = distances.argsort()[:self.k]
+    def get_k_nearest(self, distances, k):
+        k_nearest_indices = distances.argsort()[:k]
         return k_nearest_indices
 
-    #how to break ties?
-    #I changed it from mode to mean
-    def get_mean(self, k_nearest_indices):
-        if self.k == 1:
+    def get_mean(self, k_nearest_indices, k):
+        if k == 1:
             return self.Y_train[k_nearest_indices[0]]
         else:
             sum = 0
             for i in k_nearest_indices:
                 y = self.Y_train[i]
                 sum += y
-            mean = sum / self.k
-            #round up or round down??
+            mean = sum / k
             return mean
 
     def calc_distances(self, x_valid):
@@ -59,13 +54,9 @@ class KNN:
         distance = np.sum(squared)
         return distance
 
-def main(filename):
-    #preprocess data
-    
-    for k in range(1, 101):
-        print(k)
-        MAPE = KNN(k, X_train, Y_train, X_valid, Y_valid)
 
+def main(filename):
+    pass
 
 if __name__ == '__main__':
     filename = "ramen-ratings.csv"

@@ -64,6 +64,10 @@ def convert_column_to_continuous(column):
 	total_words = sum(words.values())
 	print(total_words)
 
+def shuffle_data(data, seed=0):
+	np.random.seed(seed)
+	np.random.shuffle(data)
+
 def split_X_Y(data):
     X = data[:,:-1]
     Y = data[:,-1]
@@ -93,6 +97,7 @@ def add_dummy(X):
 	N = len(X)
 	dummy = np.ones(N)
 	return np.insert(X, 0, dummy, axis=1)
+
 
 if __name__ == '__main__':
 	#You can use this for testing the preprocess_data functions

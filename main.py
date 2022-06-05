@@ -30,7 +30,11 @@ def main():
 
     #KNN
     knn = KNN(cont_X_train, Y_train, cont_X_valid, Y_valid)
-    #TODO: call KNN methods
+    mapes = []
+    for k in range(1, 101):
+        print("k =", k)
+        mape = knn.validate(k)
+        mapes.append(mape)
 
     #NaiveBayes
     nb = NaiveBayes(discrete_X_train, Y_train, discrete_X_valid, Y_valid)
