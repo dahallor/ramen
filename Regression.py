@@ -10,18 +10,17 @@ class LinearRegression():
         self.Y_valid = Y_valid
     
     def direct_solution(self):
-        self.X_train_T = np.transpose(self.X_train)
-        w = np.matmul(np.matmul(np.linalg.inv(np.matmul(X_train_bias_T, X_train_bias)), X_train_bias_T), Y_train)
+        X_train_T = np.transpose(self.X_train)
+        w = np.linalg.inv(X_train_T @ self.X_train) @ X_train_T @ self.Y_train
+    
+    def gradient_descent():
+        #TODO
+        pass
 
 
 def main(filename):
-    #preprocess data
-    #need to add bias to X
-    X_train_bias = add_dummy(X_train)
-    X_valid_bias = add_dummy(X_valid)
-    #Y should be continuous values 
-    LinearRegression(X_train_bias, Y_train, X_valid_bias, Y_valid)
-
+    #TODO you can use this for testing
+    pass
 
 
 if __name__ == '__main__':
