@@ -1,4 +1,4 @@
-
+from preprocess_data import *
 #Direct solution or regression?
 
 class LinearRegression():
@@ -10,14 +10,17 @@ class LinearRegression():
         self.Y_valid = Y_valid
     
     def direct_solution(self):
-        pass
+        self.X_train_T = np.transpose(self.X_train)
+        w = np.matmul(np.matmul(np.linalg.inv(np.matmul(X_train_bias_T, X_train_bias)), X_train_bias_T), Y_train)
 
 
 def main(filename):
     #preprocess data
     #need to add bias to X
+    X_train_bias = add_dummy(X_train)
+    X_valid_bias = add_dummy(X_valid)
     #Y should be continuous values 
-    #accuracy = KNN(k, X_train, Y_train, X_valid, Y_valid, classes)
+    LinearRegression(X_train_bias, Y_train, X_valid_bias, Y_valid)
 
 
 

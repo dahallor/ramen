@@ -49,8 +49,14 @@ def convert_column_to_continuous(column):
 	total_words = sum(words.values())
 	print(total_words)
 
+def add_dummy(X):
+	N = len(X)
+	dummy = np.ones(N)
+	return np.insert(X, 0, dummy, axis=1)
+
 
 if __name__ == '__main__':
 	filename = 'ramen-ratings.csv'
 	data = load_data(filename)
+	print(data[0])
 	convert_column_to_continuous(data[:,0])

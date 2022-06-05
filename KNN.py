@@ -4,8 +4,7 @@ from scipy.stats import mode
 
 class KNN:
 
-    #classes - list of class labels [0, 1, 2, 3, 4, 5]
-    def __init__(self, k, X_train, Y_train, X_valid, Y_valid, classes):
+    def __init__(self, k, X_train, Y_train, X_valid, Y_valid):
         self.k = k
         self.X_train = X_train
         self.Y_train = Y_train
