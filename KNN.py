@@ -20,7 +20,7 @@ class KNN:
             y_valid = self.Y_valid[i]
             distances = self.calc_distances(x_valid)
             k_nearest_indices = self.get_k_nearest(distances)
-            y_pred = self.get_mode(k_nearest_indices)
+            y_pred = self.get_mean(k_nearest_indices)
             if y_pred == y_valid:
                 accuracy += 1
         accuracy = accuracy / len(self.X_valid)
@@ -32,16 +32,18 @@ class KNN:
         return k_nearest_indices
 
     #how to break ties?
-    def get_mode(self, k_nearest_indices):
+    #I changed it from mode to mean
+    def get_mean(self, k_nearest_indices):
         if self.k == 1:
             return self.Y_train[k_nearest_indices[0]]
         else:
-            ys = []
+            sum = 0
             for i in k_nearest_indices:
                 y = self.Y_train[i]
-                ys.append(y)
-            ys = np.array(ys)
-            return mode(ys)
+                sum += y
+            mean = sum / self.k
+            #round up or round down??
+            return mean
 
     def calc_distances(self, x_valid):
         distances = []
