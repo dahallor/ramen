@@ -63,6 +63,7 @@ class KNN:
 def main(filename):
     #preprocess data
     k = 5
+    #maybe the classes thing is not appropriate
     classes = [0, 1, 2, 3, 4, 5]
     #accuracy = KNN(k, X_train, Y_train, X_valid, Y_valid, classes)
 
