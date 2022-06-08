@@ -74,12 +74,12 @@ class LinearRegression():
             #Check Conditionals
             if self.epoch % 100 == 0:
                 print("Epoch: {}\n".format(self.epoch))
-            '''
+            
             if self.epoch > 3:
                 change = abs(self.mean_train[self.epoch-1] - self.mean_train[self.epoch-2])
                 if change < .0000000001:
                     break
-            '''
+
             
             #Get Yhat        
             trainYhat = self._calcProbability(self.X_train)

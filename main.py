@@ -31,13 +31,8 @@ def main():
     #NOTE: I did not shuffle the data, not sure if I should have...
 
     #Linear Regression
-<<<<<<< HEAD
     lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
-=======
-    lr = LinearRegression(cont_X_train_bias, Y_train, cont_X_valid_bias, Y_valid)
-    pdb.set_trace()
->>>>>>> regression
-    #TODO: call LR methods
+    lr.gradient_descent()
     '''
     #KNN
     knn = KNN(cont_X_train, cont_Y_train, cont_X_valid, cont_Y_valid)
