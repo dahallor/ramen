@@ -43,7 +43,7 @@ def convert_X_to_continuous(X):
 	for i in range(2):
 		X[:, i] = convert_list_column_to_continuous(X, i)
 
-	X[:, 2] = convert_column_to_continuous(X, 2)
+	X[:, 2] = convert_list_column_to_continuous(X, 2)
 	X[:, 3] = convert_list_column_to_continuous(X, 3)
 	
 	return X
@@ -79,7 +79,7 @@ def convert_column_to_continuous(data, col_num):
 			pass
 		new_col[i] = freq_sum
 
-	return new_col
+	return new_col / np.max(new_col)
 
 def convert_list_column_to_continuous(data, col_num):
 	"""
@@ -108,10 +108,13 @@ def convert_list_column_to_continuous(data, col_num):
 	for i in range(len(new_col)):
 		freq_sum = 0
 		for word in new_col[i]:
-			freq_sum += freq_dict[word]
+			try:
+				freq_sum += freq_dict[word]
+			except:
+				pass
 		new_col[i] = freq_sum
 
-	return new_col
+	return new_col / np.max(new_col)
 
 def shuffle_data(data, seed=0):
 	np.random.seed(seed)
