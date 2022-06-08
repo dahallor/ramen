@@ -2,6 +2,7 @@ from preprocess_data import *
 from valid_statistics import graph
 from Regression import LinearRegression
 from KNN import KNN
+#from NaiveBayes import NaiveBayes
 import pdb
 
 
@@ -47,7 +48,7 @@ def main():
     graph(ks, mapes, "MAPEs of KNN models", "K", "MAPE", "knn.png")
 
     #NaiveBayes
-    nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
+    #nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
     #TODO: call NB methods
     '''
 

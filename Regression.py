@@ -1,4 +1,5 @@
 from preprocess_data import *
+from valid_statistics import *
 import pdb
 #Direct solution or regression?
 
@@ -15,6 +16,7 @@ class LinearRegression():
         self.epoch_list = []
         self.epoch = 0
 
+#===============================================================================Weights & Biases=================================================================================================================
     def _initWeights(self):
         self.W = np.zeros((len(self.X_train[0]), 1), dtype = float)
         for i in range(len(self.X_train[0])):
@@ -40,6 +42,32 @@ class LinearRegression():
         self.W = self.W - eta * self.dJdW
         self.b = self.b - eta * self.dJdb
 
+
+#====================================================================================Alter X & Y============================================================================================
+    def _transposeY(self):
+        new_Y_train = np.zeros((len(self.Y_train), 1))
+        new_Y_valid = np.zeros((len(self.Y_valid), 1))
+
+        for i in range(len(new_Y_train)):
+            new_Y_train[i][0] = self.Y_train[i]
+
+        for i in range(len(new_Y_valid)):
+            new_Y_valid[i][0] = self.Y_valid[i]
+
+        self.Y_train = new_Y_train
+        self.Y_valid = new_Y_valid
+
+
+    def _remove_dummy_vector(self):
+        self.X_train = np.delete(self.X_train, 0, 1)
+        self.X_valid = np.delete(self.X_valid, 0, 1)
+        
+
+
+
+
+#==============================================================================================Evaluation========================================================================================
+
     def _logLoss(self, y, yhat, input_type):
         epsilon = .0000001
         J = np.zeros((len(y), 1), dtype = 'float')
@@ -59,18 +87,20 @@ class LinearRegression():
             exponent = -1 * (np.matmul(X[i], self.W) + self.b)
             Yhat[i] = 1/(1 + np.exp(exponent))
         return Yhat
-    
+
+#====================================================================================Run Regression=================================================================================================
     def direct_solution(self):
         X_train_T = np.transpose(self.X_train)
         w = np.linalg.inv(X_train_T @ self.X_train) @ X_train_T @ self.Y_train
     
     def gradient_descent(self):
         #initalize weight matrix
+        self._remove_dummy_vector()
+        self._transposeY()
         self._initWeights()
         eta = .0001
         
-        while self.epoch <= 50000:
-            pdb.set_trace()
+        while self.epoch <= 5000:
             #Check Conditionals
             if self.epoch % 100 == 0:
                 print("Epoch: {}\n".format(self.epoch))
@@ -99,6 +129,7 @@ class LinearRegression():
             #Incremenet values
             self.epoch_list.append(self.epoch)
             self.epoch += 1
+        print(MAPE(self.Y_valid, validYhat))
         
         
 
