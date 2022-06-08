@@ -7,7 +7,7 @@ import math
 
 def load_data(filename):
 	data = []
-	with open(filename) as file:
+	with open(filename, encoding="utf-8") as file:
 		reader = csv.reader(file, delimiter=',')
 		next(reader)#skip header
 		for row in reader:
