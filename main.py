@@ -1,7 +1,8 @@
 from preprocess_data import *
 from Regression import LinearRegression
 from KNN import KNN
-from NaiveBayes import NaiveBayes
+import pdb
+
 
 def main():
     #Preprocess Ramen Dataset
@@ -26,8 +27,9 @@ def main():
 
     #Linear Regression
     lr = LinearRegression(cont_X_train_bias, Y_train, cont_X_valid_bias, Y_valid)
+    pdb.set_trace()
     #TODO: call LR methods
-
+    '''
     #KNN
     knn = KNN(cont_X_train, Y_train, cont_X_valid, Y_valid)
     mapes = []
@@ -39,6 +41,7 @@ def main():
     #NaiveBayes
     nb = NaiveBayes(discrete_X_train, Y_train, discrete_X_valid, Y_valid)
     #TODO: call NB methods
+    '''
 
 
 if __name__ == '__main__':

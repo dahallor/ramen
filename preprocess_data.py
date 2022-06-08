@@ -4,17 +4,27 @@ import numpy as np
 import sys
 import re
 import math
+import pdb
 
 def load_data(filename):
 	data = []
-	with open(filename) as file:
+	with open(filename, encoding='utf-8') as file:
 		reader = csv.reader(file, delimiter=',')
-		next(reader)#skip header
+		#pdb.set_trace()
+		#next(reader)#skip header
 		for row in reader:
-			if row[5] == "Unrated": #discard 3 Unrated rows
-				continue
-			row = process_row(row)
-			data.append(row)
+			try:
+				print(row)
+				#pdb.set_trace()
+				if row[0] == "Review #":
+					#skips header row
+					continue
+				if row[5] == "Unrated": #discard 3 Unrated rows
+					continue
+				row = process_row(row)
+				data.append(row)
+			except UnicodeDecodeError:
+				pass
 	data = np.array(data, dtype=object)
 	return data
 
