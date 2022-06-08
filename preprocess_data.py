@@ -11,20 +11,15 @@ def load_data(filename):
 	with open(filename, encoding='utf-8') as file:
 		reader = csv.reader(file, delimiter=',')
 		#pdb.set_trace()
-		#next(reader)#skip header
+		next(reader)#skip header
 		for row in reader:
-			try:
-				print(row)
-				#pdb.set_trace()
-				if row[0] == "Review #":
-					#skips header row
-					continue
-				if row[5] == "Unrated": #discard 3 Unrated rows
-					continue
-				row = process_row(row)
-				data.append(row)
-			except UnicodeDecodeError:
-				pass
+			
+			print(row)
+			if row[5] == "Unrated": #discard 3 Unrated rows
+				continue
+			row = process_row(row)
+			data.append(row)
+			
 	data = np.array(data, dtype=object)
 	return data
 
