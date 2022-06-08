@@ -20,7 +20,7 @@ class KNN:
             k_nearest_indices = self.get_k_nearest(distances, k)
             y_pred = self.get_mean(k_nearest_indices, k)
             Y_pred.append(y_pred)
-            print("y_valid", y_valid, "y_pred", y_pred)
+            #print("y_valid", y_valid, "y_pred", y_pred)
         mape = MAPE(self.Y_valid, Y_pred)
         return mape
 

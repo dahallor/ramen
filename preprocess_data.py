@@ -1,5 +1,4 @@
 import csv
-from heapq import heapify
 import numpy as np
 import sys
 import re
@@ -21,8 +20,11 @@ def load_data(filename):
 def process_row(row):
 	row = row[1:6]
 	row[4] = float(row[4])
-	for i in range(0,2):
-		row[i] = process_phrase(row[i])
+	for i in range(0,4):
+		if i < 2:
+			row[i] = process_phrase(row[i])
+		else:
+			row[i] = [row[i]]
 	return row
 
 def process_phrase(phrase):
@@ -43,7 +45,7 @@ def convert_X_to_continuous(X):
 		cont_f_column = convert_column_to_continuous(feature_column)
 		#cont_f_column = feature_column #for testing
 		cont_f_column = np.reshape(cont_f_column, (N, 1))
-		print(cont_f_column.shape)
+		#print(cont_f_column.shape)
 		if continuous_X is None:
 			continuous_X = cont_f_column
 		else:
@@ -54,15 +56,23 @@ def convert_column_to_continuous(column):
 	words = {}
 	for lst_of_words in column:
 		for word in lst_of_words:
+			#print(word)
 			if word in words:
 				words[word] = words[word] + 1
 			else:
 				words[word] = 1
-	#sorted_words = sorted(words.items(), key=lambda x: x[1], reverse=True)
-	#for i in sorted_words:
-	#	print(i[0], i[1])
 	total_words = sum(words.values())
-	print(total_words)
+	#print(total_words)
+	word_frequencies = {key: value / total_words for key, value in words.items()}
+
+	continuous = []
+	for lst_of_words in column:
+		sum_frequencies = 0
+		for word in lst_of_words:
+			sum_frequencies += word_frequencies[word]
+		#print(sum_frequencies)
+		continuous.append(sum_frequencies)
+	return np.array(continuous)
 
 def shuffle_data(data, seed=0):
 	np.random.seed(seed)
@@ -101,8 +111,14 @@ def add_dummy(X):
 
 if __name__ == '__main__':
 	#You can use this for testing the preprocess_data functions
-	pass
 	'''X = np.array([[1, 2, 3],
 					[4, 5, 6]])'''
+	filename = "ramen-ratings.csv"
+	data = load_data(filename)
+	
+	X, Y = split_X_Y(data)
+	print(X[0])
+	continuous_X = convert_X_to_continuous(X)
+	print(continuous_X[0])
 	
 
