@@ -1,5 +1,4 @@
 import csv
-from heapq import heapify
 import numpy as np
 import sys
 import re
@@ -21,8 +20,11 @@ def load_data(filename):
 
 def process_row(row):
 	row[4] = float(row[4])
-	for i in range(0,2):
-		row[i] = process_phrase(row[i])
+	for i in range(0,4):
+		if i < 2:
+			row[i] = process_phrase(row[i])
+		else:
+			row[i] = [row[i]]
 	return row
 
 def process_phrase(phrase):
@@ -145,13 +147,22 @@ def add_dummy(X):
 	dummy = np.ones(N)
 	return np.insert(X, 0, dummy, axis=1)
 
+def rounded_Y(Y):
+	new_Y = []
+	for y in Y:
+		new_Y.append(round(y))
+	return np.array(new_Y)
 
 if __name__ == '__main__':
 	#You can use this for testing the preprocess_data functions
-	data = load_data('ramen-ratings.csv')
-
-	cont = convert_X_to_continuous(data)
-
-	i = 0
+	'''X = np.array([[1, 2, 3],
+					[4, 5, 6]])'''
+	filename = "ramen-ratings.csv"
+	data = load_data(filename)
+	
+	X, Y = split_X_Y(data)
+	print(X[0])
+	continuous_X = convert_X_to_continuous(X)
+	print(continuous_X[0])
 	
 

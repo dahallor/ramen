@@ -20,6 +20,7 @@ class KNN:
             k_nearest_indices = self.get_k_nearest(distances, k)
             y_pred = self.get_mean(k_nearest_indices, k)
             Y_pred.append(y_pred)
+            #print("y_valid", y_valid, "y_pred", y_pred)
         mape = MAPE(self.Y_valid, Y_pred)
         return mape
 
@@ -55,9 +56,16 @@ class KNN:
         return distance
 
 
-def main(filename):
-    pass
-
 if __name__ == '__main__':
-    filename = "ramen-ratings.csv"
-    main(filename)
+    #filename = "ramen-ratings.csv"
+
+    X_train = np.array([[0.1, 0.2, 0.4],
+    [0.5, 0.2, 0.3]])
+    Y_train = np.array([1, 2])
+
+    X_valid = np.array([[0.5, 0.3, 0.2]])
+    Y_valid = np.array([2])
+
+    knn = KNN(X_train, Y_train, X_valid, Y_valid)
+    knn.validate(1)
+    knn.validate(2)
