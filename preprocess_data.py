@@ -5,7 +5,7 @@ import re
 import math
 from pandas import read_csv
 
-BANNED_DATA = ["Unrated"]
+BANNED_DATA = ["Unrated", math.nan]
 
 def load_data(filename):
 	# load data, dropping header and weird trailing comma in CSV
@@ -16,7 +16,7 @@ def load_data(filename):
 			if len(set(BANNED_DATA).intersection(set(row))) > 0:
 				continue
 			row_list.append(np.array(process_row(row)))
-	return np.array(data)
+	return np.array(row_list)
 
 def process_row(row):
 	row[4] = float(row[4])
@@ -73,10 +73,7 @@ def convert_column_to_continuous(data, col_num):
 	
 	for i in range(len(new_col)):
 		freq_sum = 0
-		try:
-			freq_sum += freq_dict[new_col[i]]
-		except:
-			pass
+		freq_sum += freq_dict[new_col[i]]
 		new_col[i] = freq_sum
 
 	return new_col / np.max(new_col)
