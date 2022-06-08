@@ -16,7 +16,7 @@ def load_data(filename):
 			if len(set(BANNED_DATA).intersection(set(row))) > 0:
 				continue
 			row_list.append(np.array(process_row(row)))
-	return np.array(data)
+	return np.array(data, dtype=object)
 
 def process_row(row):
 	row[4] = float(row[4])
