@@ -14,7 +14,6 @@ def load_data(filename):
 	for i in range(data.shape[0]):
 		row = data[i, :]
 		if len(set(BANNED_DATA).intersection(set(row))) > 0:
-			print("here")
 			continue
 		row_list.append(np.array(process_row(row)))
 	return np.array(row_list, dtype=object)
@@ -135,7 +134,7 @@ def split_train_valid(data, train_percent=0.66):
 
 def calc_mean_std(X):
     mean = np.mean(X, axis=0)
-    std = np.std(X, axis=0, ddof=1)
+    std = np.std(X.astype(float), axis=0, ddof=1)
     return mean, std
 
 def z_score(X, mean, std):
@@ -150,13 +149,8 @@ def add_dummy(X):
 
 def rounded_Y(Y):
 	new_Y = []
-	#count = 0
-	#print(Y.shape)
 	for y in Y:
-		#print(count)
-		#print(type(y))
 		new_Y.append(round(y))
-		#count += 1
 	return np.array(new_Y)
 
 if __name__ == '__main__':
