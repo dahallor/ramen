@@ -3,26 +3,22 @@ import numpy as np
 import sys
 import re
 import math
-import pdb
+from pandas import read_csv
+
+BANNED_DATA = ["Unrated"]
 
 def load_data(filename):
-	data = []
-	with open(filename, encoding="utf-8") as file:
-		reader = csv.reader(file, delimiter=',')
-		#pdb.set_trace()
-		next(reader)#skip header
-		for row in reader:
-			#print(row)
-			if row[5] == "Unrated": #discard 3 Unrated rows
+	# load data, dropping header and weird trailing comma in CSV
+	data = read_csv('ramen-ratings.csv').to_numpy()[:, 1:-1]
+	row_list = []
+	for i in range(data.shape[0]):
+			row = data[i, :]
+			if len(set(BANNED_DATA).intersection(set(row))) > 0:
 				continue
-			row = process_row(row)
-			data.append(row)
-			
-	data = np.array(data, dtype=object)
-	return data
+			row_list.append(np.array(process_row(row)))
+	return np.array(data)
 
 def process_row(row):
-	row = row[1:6]
 	row[4] = float(row[4])
 	for i in range(0,4):
 		if i < 2:
@@ -41,42 +37,81 @@ def process_phrase(phrase):
 	return new_words
 
 def convert_X_to_continuous(X):
-	continuous_X = None
-	N, D = X.shape
-	for d in range(D):
-		feature_column = X[:,d]
-		#called for every column in X
-		cont_f_column = convert_column_to_continuous(feature_column)
-		#cont_f_column = feature_column #for testing
-		cont_f_column = np.reshape(cont_f_column, (N, 1))
-		#print(cont_f_column.shape)
-		if continuous_X is None:
-			continuous_X = cont_f_column
-		else:
-			continuous_X = np.concatenate((continuous_X, cont_f_column), axis=1)
-	return continuous_X
+	"""
+	Converts first four features to continuous.
+	"""
+	for i in range(2):
+		X[:, i] = convert_list_column_to_continuous(X, i)
 
-def convert_column_to_continuous(column):
-	words = {}
-	for lst_of_words in column:
-		for word in lst_of_words:
-			#print(word)
-			if word in words:
-				words[word] = words[word] + 1
-			else:
-				words[word] = 1
-	total_words = sum(words.values())
-	#print(total_words)
-	word_frequencies = {key: value / total_words for key, value in words.items()}
+	X[:, 2] = convert_column_to_continuous(X, 2)
+	X[:, 3] = convert_list_column_to_continuous(X, 3)
+	
+	return X
 
-	continuous = []
-	for lst_of_words in column:
-		sum_frequencies = 0
-		for word in lst_of_words:
-			sum_frequencies += word_frequencies[word]
-		#print(sum_frequencies)
-		continuous.append(sum_frequencies)
-	return np.array(continuous)
+def convert_column_to_continuous(data, col_num):
+	"""
+	Returns provided data with specified column converted to continuous frequency variable.
+	This is basically a measure of how popular the words in the title/brandname/etc are in the overall dataset.
+	"""
+	new_col = data[:,col_num]
+
+	word_list = []
+	for i in range(len(new_col)):
+		word_list.append(new_col[i])
+
+	word_list = np.array(word_list)
+
+	unique, counts = np.unique(word_list, return_counts=True)
+
+	mean, std = calc_mean_std(counts)
+	counts = z_score(counts, mean, std)
+
+	freq_dict = {}
+
+	for i in range(len(unique)):
+		freq_dict[unique[i]] = counts[i]
+	
+	for i in range(len(new_col)):
+		freq_sum = 0
+		try:
+			freq_sum += freq_dict[new_col[i]]
+		except:
+			pass
+		new_col[i] = freq_sum
+
+	return new_col
+
+def convert_list_column_to_continuous(data, col_num):
+	"""
+	Returns provided data with specified column converted to continuous frequency variable.
+	This is basically a measure of how popular the words in the title/brandname/etc are in the overall dataset.
+	"""
+	new_col = data[:,col_num]
+
+	word_list = []
+	for i in range(len(new_col)):
+		for word in new_col[i]:
+			word_list.append(word)
+
+	word_list = np.array(word_list)
+
+	unique, counts = np.unique(word_list, return_counts=True)
+
+	mean, std = calc_mean_std(counts)
+	counts = z_score(counts, mean, std)
+
+	freq_dict = {}
+
+	for i in range(len(unique)):
+		freq_dict[unique[i]] = counts[i]
+	
+	for i in range(len(new_col)):
+		freq_sum = 0
+		for word in new_col[i]:
+			freq_sum += freq_dict[word]
+		new_col[i] = freq_sum
+
+	return new_col
 
 def shuffle_data(data, seed=0):
 	np.random.seed(seed)
