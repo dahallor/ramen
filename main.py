@@ -2,6 +2,7 @@ from preprocess_data import *
 from valid_statistics import graph
 from Regression import LinearRegression
 from KNN import KNN
+#from NaiveBayes import NaiveBayes
 import pdb
 
 
@@ -31,14 +32,9 @@ def main():
     #NOTE: I did not shuffle the data, not sure if I should have...
 
     #Linear Regression
-<<<<<<< HEAD
-    lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
-=======
-    lr = LinearRegression(cont_X_train_bias, Y_train, cont_X_valid_bias, Y_valid)
-    pdb.set_trace()
->>>>>>> regression
+    #lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
     #TODO: call LR methods
-    '''
+    
     #KNN
     knn = KNN(cont_X_train, cont_Y_train, cont_X_valid, cont_Y_valid)
     ks = []
@@ -52,9 +48,9 @@ def main():
     graph(ks, mapes, "MAPEs of KNN models", "K", "MAPE", "knn.png")
 
     #NaiveBayes
-    nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
+    #nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
     #TODO: call NB methods
-    '''
+    
 
 
 if __name__ == '__main__':

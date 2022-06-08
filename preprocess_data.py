@@ -7,17 +7,12 @@ import pdb
 
 def load_data(filename):
 	data = []
-<<<<<<< HEAD
 	with open(filename, encoding="utf-8") as file:
-=======
-	with open(filename, encoding='utf-8') as file:
->>>>>>> regression
 		reader = csv.reader(file, delimiter=',')
 		#pdb.set_trace()
 		next(reader)#skip header
 		for row in reader:
-			
-			print(row)
+			#print(row)
 			if row[5] == "Unrated": #discard 3 Unrated rows
 				continue
 			row = process_row(row)
@@ -120,7 +115,7 @@ def add_dummy(X):
 def rounded_Y(Y):
 	new_Y = []
 	for y in Y:
-		new_Y.append(round(new_Y[y]))
+		new_Y.append(round(y))
 	return np.array(new_Y)
 
 if __name__ == '__main__':
