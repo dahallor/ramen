@@ -108,6 +108,11 @@ def add_dummy(X):
 	dummy = np.ones(N)
 	return np.insert(X, 0, dummy, axis=1)
 
+def rounded_Y(Y):
+	new_Y = []
+	for y in Y:
+		new_Y.append(round(new_Y[y]))
+	return np.array(new_Y)
 
 if __name__ == '__main__':
 	#You can use this for testing the preprocess_data functions
