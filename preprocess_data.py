@@ -12,11 +12,12 @@ def load_data(filename):
 	data = read_csv('ramen-ratings.csv').to_numpy()[:, 1:-1]
 	row_list = []
 	for i in range(data.shape[0]):
-			row = data[i, :]
-			if len(set(BANNED_DATA).intersection(set(row))) > 0:
-				continue
-			row_list.append(np.array(process_row(row)))
-	return np.array(row_list)
+		row = data[i, :]
+		if len(set(BANNED_DATA).intersection(set(row))) > 0:
+			print("here")
+			continue
+		row_list.append(np.array(process_row(row)))
+	return np.array(row_list, dtype=object)
 
 def process_row(row):
 	row[4] = float(row[4])
@@ -149,8 +150,13 @@ def add_dummy(X):
 
 def rounded_Y(Y):
 	new_Y = []
+	#count = 0
+	#print(Y.shape)
 	for y in Y:
+		#print(count)
+		#print(type(y))
 		new_Y.append(round(y))
+		#count += 1
 	return np.array(new_Y)
 
 if __name__ == '__main__':
