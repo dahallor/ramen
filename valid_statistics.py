@@ -24,4 +24,4 @@ def graph(x, y, title, x_label, y_label, figure_name):
     plt.title(title)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    plt.savefig(figure_name, format="png")
+    plt.savefig(figure_name)
