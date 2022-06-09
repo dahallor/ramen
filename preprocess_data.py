@@ -4,16 +4,9 @@ import sys
 import re
 import math
 from pandas import read_csv
-from imblearn.over_sampling import SMOTE
 from collections import Counter
 
 BANNED_DATA = ["Unrated", math.nan]
-
-def balance_data(X, Y):
-	Y = rounded_Y(Y)
-	oversample = SMOTE()
-	X, Y = oversample.fit_resample(X, Y)
-	return X, Y
 
 def load_data(filename):
 	# load data, dropping header and weird trailing comma in CSV
@@ -48,7 +41,6 @@ def convert_X_to_continuous(X):
 	"""
 	Converts first four features to continuous.
 	"""
-
 	new_X = np.zeros(X.shape)
 
 	for i in range(2):

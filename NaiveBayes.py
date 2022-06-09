@@ -26,42 +26,9 @@ class NaiveBayes:
 		return np.array(feature_list)
 
 
-	def resample_X_Y(self, X, Y, seed = 0):
-		labels, counts = np.unique(Y, return_counts=True)
-
-		max_arg = max(counts)
-
-		additional_X = []
-		additional_Y = []
-		for i in range(len(labels)):
-			while counts[i] < max_arg:
-				rowChoice = random.choice(np.argwhere(Y==labels[i]))[0]
-				new_x = X[rowChoice]
-				new_y = Y[rowChoice]
-				additional_X.append(new_x)
-				additional_Y.append(new_y)
-				counts[i] += 1
-
-		additional_X = np.array(additional_X)
-		additional_Y = np.array(additional_Y)
-
-		listX = list(X)
-		listX.extend(additional_X)
-		new_X = np.array(listX)
-
-		listY = list(Y)
-		listY.extend(additional_Y)
-		new_Y = np.array(listY)
-
-		np.random.seed(seed)
-		shuffle_order = np.random.permutation(len(new_Y))
-		new_X, new_Y = new_X[shuffle_order], new_Y[shuffle_order]
-
-		return new_X, new_Y
-
 	def get_cond_prob(self, token_freq, label_token_freq, label_prior):
-			probability = ((label_token_freq+1) / (token_freq+ 1)) * label_prior
-			return probability
+		probability = ((label_token_freq+1) / (token_freq+ 1)) * label_prior
+		return probability
 
 	def get_pred(self, observation):
 		max_prob = -math.inf
@@ -93,7 +60,6 @@ class NaiveBayes:
 		return preds
 
 	def train(self):
-		self.discrete_X_train, self.discrete_Y_train = self.resample_X_Y(self.discrete_X_train, self.discrete_Y_train)
 
 		self.class_token_freqs = {}
 		self.token_freqs = {}

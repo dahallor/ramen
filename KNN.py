@@ -14,8 +14,8 @@ class KNN:
     def validate(self, k):
         Y_pred = []
         for i in range(len(self.X_valid)):
-            if i%10 == 0:
-                print(f"{i/len(self.X_valid)}%")
+            #if i%10 == 0:
+                #print(f"{i/len(self.X_valid)}%")
             x_valid = self.X_valid[i]
             y_valid = self.Y_valid[i]
             distances = self.calc_distances(x_valid)

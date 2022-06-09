@@ -1,7 +1,7 @@
 from preprocess_data import *
 from valid_statistics import *
 import pdb
-#Direct solution or regression?
+from tqdm import tqdm
 
 class LinearRegression():
 
@@ -102,16 +102,18 @@ class LinearRegression():
 
     
     def gradient_descent(self):
+        print("executing batch gradient descent")
         #initalize weight matrix
         self._remove_dummy_vector()
         self._transposeY()
         self._initWeights()
         eta = .0001
         
-        while self.epoch <= 15000:
+        for i in tqdm(range(15001)):
+        #while self.epoch <= 15000:
             #Check Conditionals
-            if self.epoch % 100 == 0:
-                print("Epoch: {}\n".format(self.epoch))
+            #if self.epoch % 100 == 0:
+            #    print("Epoch: {}\n".format(self.epoch))
                 #pdb.set_trace()
 
             

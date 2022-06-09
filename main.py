@@ -28,35 +28,23 @@ def main():
 
     cont_X_train_bias = add_dummy(cont_X_train)
     cont_X_valid_bias = add_dummy(cont_X_valid)
-
-    #NOTE: I did not shuffle the data, not sure if I should have...
     
-    run_lr = False
-    run_knn = False
-    run_naive = True
+    print("Linear Regression")
+    lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
+    lr.direct_solution()
+    lr.gradient_descent()
 
-    if run_lr:
-        #Linear Regression
-        lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
-        lr.direct_solution()
-        lr.gradient_descent()
+    print("\nKNN")
+    knn = KNN(cont_X_train, cont_Y_train, cont_X_valid, cont_Y_valid)
+    validate_and_graph_knn(knn)
 
-    if run_knn:
-        #KNN
-        knn = KNN(cont_X_train, cont_Y_train, cont_X_valid, cont_Y_valid)
-        validate_and_graph_knn(knn)
-
-    if run_naive:
-        #NaiveBayes
-        nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
-        nb.train()
-        train_preds = nb.get_preds(nb.discrete_X_train)
-        print(f"Train MAPE: {MAPE(nb.discrete_Y_train, train_preds)}")
-        valid_preds = nb.get_preds(nb.discrete_X_valid)
-        print(f"Validation MAPE: {MAPE(nb.discrete_Y_valid, valid_preds)}")
-    #NaiveBayes
-    #nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
-    #TODO: call NB methods
+    print("\nNaiveBayes")
+    nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
+    nb.train()
+    train_preds = nb.get_preds(nb.discrete_X_train)
+    print(f"Train MAPE: {MAPE(nb.discrete_Y_train, train_preds)}")
+    valid_preds = nb.get_preds(nb.discrete_X_valid)
+    print(f"Validation MAPE: {MAPE(nb.discrete_Y_valid, valid_preds)}")
     
 def validate_and_graph_knn(knn):
     ks = []
@@ -64,15 +52,16 @@ def validate_and_graph_knn(knn):
     print("k =", 1)
     mape = knn.validate(1)
     ks.append(1)
-    mapes.append(mape)
-    print(mape)
+    mapes.append( mape)
+    print("Valid MAPE:", mape)
     for k in range(100, 1800, 100):
         print("k =", k)
         mape = knn.validate(k)
-        print(mape)
+        print("Valid MAPE:", mape)
         ks.append(k)
         mapes.append(mape)
     graph(ks, mapes, "MAPEs of KNN models", "K", "MAPE", "knn.png")
+
 
 if __name__ == '__main__':
     main()
