@@ -124,13 +124,3 @@ class NaiveBayes:
 					self.class_token_freqs[label][token] = 1
 				else:
 					self.class_token_freqs[label][token] += 1
-			
-
-	def run_naive_bayes(self):
-		"""
-			Run naive bayes, return useful metrics
-		"""
-
-		self.train()
-		preds = self.get_preds(self.discrete_X_valid)
-		return MAPE(self.discrete_Y_valid, preds)

@@ -1,5 +1,5 @@
 from preprocess_data import *
-from valid_statistics import graph
+from valid_statistics import MAPE, graph, print_stats
 from Regression import LinearRegression
 from KNN import KNN
 from NaiveBayes import NaiveBayes
@@ -49,9 +49,11 @@ def main():
     if run_naive:
         #NaiveBayes
         nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
-        mape = nb.run_naive_bayes()
-        print(mape)
-
+        nb.train()
+        train_preds = nb.get_preds(nb.discrete_X_train)
+        print(f"Train MAPE: {MAPE(nb.discrete_Y_train, train_preds)}")
+        valid_preds = nb.get_preds(nb.discrete_X_valid)
+        print(f"Validation MAPE: {MAPE(nb.discrete_Y_valid, valid_preds)}")
     #NaiveBayes
     #nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
     #TODO: call NB methods
