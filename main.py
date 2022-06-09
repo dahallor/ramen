@@ -33,6 +33,7 @@ def main():
 
     #Linear Regression
     lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
+    lr.direct_solution()
     lr.gradient_descent()
     '''
     #KNN
