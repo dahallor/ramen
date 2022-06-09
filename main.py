@@ -32,8 +32,9 @@ def main():
     #NOTE: I did not shuffle the data, not sure if I should have...
 
     #Linear Regression
-    #lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
-    #TODO: call LR methods
+    lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
+    lr.direct_solution()
+    lr.gradient_descent()
     
     run_knn = False
     run_naive = True
@@ -41,22 +42,33 @@ def main():
     if run_knn:
         #KNN
         knn = KNN(cont_X_train, cont_Y_train, cont_X_valid, cont_Y_valid)
-        ks = []
-        mapes = []
-        for k in range(100, 1800, 100):
-            print("k =", k)
-            mape = knn.validate(k)
-            ks.append(k)
-            mapes.append(mape)
-            print(round(mape, 3))
-        graph(ks, mapes, "MAPEs of KNN models", "K", "MAPE", "knn.png")
+        validate_and_graph_knn(knn)
 
     if run_naive:
         #NaiveBayes
         nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
         mape = nb.run_naive_bayes()
         print(mape)
+
+    #NaiveBayes
+    #nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
+    #TODO: call NB methods
     
+def validate_and_graph_knn(knn):
+    ks = []
+    mapes = []
+    print("k =", 1)
+    mape = knn.validate(1)
+    ks.append(1)
+    mapes.append(mape)
+    print(mape)
+    for k in range(100, 1800, 100):
+        print("k =", k)
+        mape = knn.validate(k)
+        print(mape)
+        ks.append(k)
+        mapes.append(mape)
+    graph(ks, mapes, "MAPEs of KNN models", "K", "MAPE", "knn.png")
 
 if __name__ == '__main__':
     main()
