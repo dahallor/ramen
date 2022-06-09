@@ -23,7 +23,7 @@ class NaiveBayes:
 		
 			feature_list.append(np.array(sub_list))
 
-		return np.array(feature_list)
+		return np.array(feature_list, dtype=object)
 
 
 	def get_cond_prob(self, token_freq, label_token_freq, label_prior):
