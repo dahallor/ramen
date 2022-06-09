@@ -8,20 +8,6 @@ from pandas import read_csv
 BANNED_DATA = ["Unrated", math.nan]
 
 def load_data(filename):
-<<<<<<< HEAD
-	data = []
-	with open(filename, encoding="utf-8") as file:
-		reader = csv.reader(file, delimiter=',')
-		next(reader)#skip header
-		for row in reader:
-			#print(row)
-			if row[5] == "Unrated": #discard 3 Unrated rows
-				continue
-			row = process_row(row)
-			data.append(row)
-	data = np.array(data, dtype=object)
-	return data
-=======
 	# load data, dropping header and weird trailing comma in CSV
 	data = read_csv('ramen-ratings.csv').to_numpy()[:, 1:-1]
 	row_list = []
@@ -31,7 +17,6 @@ def load_data(filename):
 			continue
 		row_list.append(np.array(process_row(row)))
 	return np.array(row_list, dtype=object)
->>>>>>> 90b0ece1249d7737f2bd759804941f931305373e
 
 def process_row(row):
 	row[4] = float(row[4])
