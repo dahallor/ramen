@@ -1,4 +1,5 @@
 from preprocess_data import *
+from valid_statistics import *
 import pdb
 #Direct solution or regression?
 
@@ -10,11 +11,12 @@ class LinearRegression():
         self.X_valid = X_valid
         self.Y_valid = Y_valid
         #for plotting effectiveness by epoch
-        self.mean_train = []
-        self.mean_valid = []
+        self.MAPE_train = []
+        self.MAPE_valid = []
         self.epoch_list = []
         self.epoch = 0
 
+#===============================================================================Weights & Biases=================================================================================================================
     def _initWeights(self):
         self.W = np.zeros((len(self.X_train[0]), 1), dtype = float)
         for i in range(len(self.X_train[0])):
@@ -40,54 +42,83 @@ class LinearRegression():
         self.W = self.W - eta * self.dJdW
         self.b = self.b - eta * self.dJdb
 
-    def _logLoss(self, y, yhat, input_type):
-        epsilon = .0000001
-        J = np.zeros((len(y), 1), dtype = 'float')
-        for i in range(len(J)):
-            J[i][0] = -1 * ((y[i][0] * np.log((yhat[i][0] + epsilon))) + (1 - y[i][0]) * np.log((1 - yhat[i][0] + epsilon)))
-        if input_type == "train":
-            mean = np.mean(J)
-            self.mean_train.append(mean)
-        if input_type == "valid":
-            mean = np.mean(J)
-            self.mean_valid.append(mean)
+
+#====================================================================================Alter X & Y============================================================================================
+    def _transposeY(self):
+        new_Y_train = np.zeros((len(self.Y_train), 1))
+        new_Y_valid = np.zeros((len(self.Y_valid), 1))
+
+        for i in range(len(new_Y_train)):
+            new_Y_train[i][0] = self.Y_train[i]
+
+        for i in range(len(new_Y_valid)):
+            new_Y_valid[i][0] = self.Y_valid[i]
+
+        self.Y_train = new_Y_train
+        self.Y_valid = new_Y_valid
 
 
-    def _calcProbability(self, X):
-        Yhat = np.zeros((len(X), 1), dtype = 'float')
-        for i in range(len(X)):
-            exponent = -1 * (np.matmul(X[i], self.W) + self.b)
-            Yhat[i] = 1/(1 + np.exp(exponent))
+    def _remove_dummy_vector(self):
+        self.X_train = np.delete(self.X_train, 0, 1)
+        self.X_valid = np.delete(self.X_valid, 0, 1)
+        
+
+
+
+
+#==============================================================================================Evaluation========================================================================================
+
+
+    def _calcYhat(self, X):
+        Yhat = X.dot(self.W)
+        Yhat = Yhat + self.b
         return Yhat
-    
+
+    def _calcYhatDirect(self, X, w):
+        Yhat = X.dot(w)
+        return Yhat
+
+    def _plotMAPE(self):
+        plt.xlabel("Epoch")
+        plt.ylabel("MAPE")
+        plt.plot(self.epoch_list, self.MAPE_train, label = "Training", color = "blue")
+        plt.plot(self.epoch_list, self.MAPE_valid, label = "Validation", color = "orange")
+        plt.title(label = "MAPE Vs. Epoch")
+        plt.legend()
+        plt.show()
+
+#====================================================================================Run Regression=================================================================================================
     def direct_solution(self):
         X_train_T = np.transpose(self.X_train)
         w = np.linalg.inv(X_train_T @ self.X_train) @ X_train_T @ self.Y_train
+
+        Yhat_train = self._calcYhatDirect(self.X_train, w)
+        Yhat_valid = self._calcYhatDirect(self.X_valid, w)
+
+        print("Direct:")
+        print("{}".format(MAPE(self.Y_train, Yhat_train)))
+        print("{}".format(MAPE(self.Y_valid, Yhat_valid)))
+        print()
+
     
     def gradient_descent(self):
         #initalize weight matrix
+        self._remove_dummy_vector()
+        self._transposeY()
         self._initWeights()
         eta = .0001
         
-        while self.epoch <= 50000:
-            pdb.set_trace()
+        while self.epoch <= 15000:
             #Check Conditionals
             if self.epoch % 100 == 0:
                 print("Epoch: {}\n".format(self.epoch))
-            '''
-            if self.epoch > 3:
-                change = abs(self.mean_train[self.epoch-1] - self.mean_train[self.epoch-2])
-                if change < .0000000001:
-                    break
-            '''
+                #pdb.set_trace()
+
             
             #Get Yhat        
-            trainYhat = self._calcProbability(self.X_train)
-            validYhat = self._calcProbability(self.X_valid)
+            trainYhat = self._calcYhat(self.X_train)
+            validYhat = self._calcYhat(self.X_valid)
 
-            #Objective Function Evaluation
-            self._logLoss(self.Y_train, trainYhat, "train")
-            self._logLoss(self.Y_valid, validYhat, "valid")
 
             #Set Weight and Bias derivatives
             self._set_dJdW(self.X_train, self.Y_train, trainYhat)
@@ -99,6 +130,17 @@ class LinearRegression():
             #Incremenet values
             self.epoch_list.append(self.epoch)
             self.epoch += 1
+
+            #Record MAPE value at current Epoch
+            train_MAPE_value = MAPE(self.Y_train, trainYhat)
+            valid_MAPE_value = MAPE(self.Y_valid, validYhat)
+            self.MAPE_train.append(train_MAPE_value)
+            self.MAPE_valid.append(valid_MAPE_value)
+
+        print("Gradient Descent:")
+        print("Training MAPE: {}".format(MAPE(self.Y_train, trainYhat)))    
+        print("Validation MAPE: {}".format(MAPE(self.Y_valid, validYhat)))
+        self._plotMAPE()
         
         
 

@@ -32,8 +32,9 @@ def main():
     #NOTE: I did not shuffle the data, not sure if I should have...
 
     #Linear Regression
-    #lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
-    #TODO: call LR methods
+    lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
+    lr.direct_solution()
+    lr.gradient_descent()
     
     #KNN
     knn = KNN(cont_X_train, cont_Y_train, cont_X_valid, cont_Y_valid)
