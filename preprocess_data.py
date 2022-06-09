@@ -46,6 +46,7 @@ def convert_X_to_continuous(X):
 	X[:, 2] = convert_list_column_to_continuous(X, 2)
 	X[:, 3] = convert_list_column_to_continuous(X, 3)
 	
+	X = X.astype('float64')
 	return X
 
 def convert_column_to_continuous(data, col_num):
