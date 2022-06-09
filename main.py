@@ -30,14 +30,16 @@ def main():
     cont_X_valid_bias = add_dummy(cont_X_valid)
 
     #NOTE: I did not shuffle the data, not sure if I should have...
-
-    #Linear Regression
-    lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
-    lr.direct_solution()
-    lr.gradient_descent()
     
+    run_lr = False
     run_knn = False
     run_naive = True
+
+    if run_lr:
+        #Linear Regression
+        lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
+        lr.direct_solution()
+        lr.gradient_descent()
 
     if run_knn:
         #KNN
