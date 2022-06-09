@@ -1,8 +1,8 @@
 from preprocess_data import *
-from valid_statistics import graph
+from valid_statistics import MAPE, graph, print_stats
 from Regression import LinearRegression
 from KNN import KNN
-#from NaiveBayes import NaiveBayes
+from NaiveBayes import NaiveBayes
 import pdb
 
 
@@ -28,30 +28,39 @@ def main():
 
     cont_X_train_bias = add_dummy(cont_X_train)
     cont_X_valid_bias = add_dummy(cont_X_valid)
-
-    #NOTE: I did not shuffle the data, not sure if I should have...
-
-    #Linear Regression
+    
+    print("Linear Regression")
     lr = LinearRegression(cont_X_train_bias, cont_Y_train, cont_X_valid_bias, cont_Y_valid)
     lr.direct_solution()
     lr.gradient_descent()
-    '''
-    #KNN
+
+    print("\nKNN")
     knn = KNN(cont_X_train, cont_Y_train, cont_X_valid, cont_Y_valid)
+    validate_and_graph_knn(knn)
+
+    print("\nNaiveBayes")
+    nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
+    nb.train()
+    train_preds = nb.get_preds(nb.discrete_X_train)
+    print(f"Train MAPE: {MAPE(nb.discrete_Y_train, train_preds)}")
+    valid_preds = nb.get_preds(nb.discrete_X_valid)
+    print(f"Validation MAPE: {MAPE(nb.discrete_Y_valid, valid_preds)}")
+    
+def validate_and_graph_knn(knn):
     ks = []
     mapes = []
+    print("k =", 1)
+    mape = knn.validate(1)
+    ks.append(1)
+    mapes.append( mape)
+    print("Valid MAPE:", mape)
     for k in range(100, 1800, 100):
         print("k =", k)
         mape = knn.validate(k)
+        print("Valid MAPE:", mape)
         ks.append(k)
         mapes.append(mape)
-        print(round(mape, 3))
     graph(ks, mapes, "MAPEs of KNN models", "K", "MAPE", "knn.png")
-
-    #NaiveBayes
-    #nb = NaiveBayes(discrete_X_train, discrete_Y_train, discrete_X_valid, discrete_Y_valid)
-    #TODO: call NB methods
-    '''
 
 
 if __name__ == '__main__':

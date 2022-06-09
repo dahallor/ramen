@@ -4,6 +4,7 @@ import sys
 import re
 import math
 from pandas import read_csv
+from collections import Counter
 
 BANNED_DATA = ["Unrated", math.nan]
 
@@ -40,40 +41,44 @@ def convert_X_to_continuous(X):
 	"""
 	Converts first four features to continuous.
 	"""
-	for i in range(2):
-		X[:, i] = convert_list_column_to_continuous(X, i)
+	new_X = np.zeros(X.shape)
 
-	X[:, 2] = convert_list_column_to_continuous(X, 2)
-	X[:, 3] = convert_list_column_to_continuous(X, 3)
+	for i in range(2):
+		new_X[:, i] = convert_list_column_to_continuous(X, i)
+
+	new_X[:, 2] = convert_list_column_to_continuous(X, 2)
+	new_X[:, 3] = convert_list_column_to_continuous(X, 3)
 	
-	return X
+	return new_X
+
+def gaussian_dist(means, stdevs, x):
+    return (1/(stdevs * math.sqrt(2*math.pi)))* np.exp(-((x-means)**2)/(2*(stdevs**2)))
 
 def convert_column_to_continuous(data, col_num):
 	"""
 	Returns provided data with specified column converted to continuous frequency variable.
 	This is basically a measure of how popular the words in the title/brandname/etc are in the overall dataset.
 	"""
-	new_col = data[:,col_num]
+	new_col = np.zeros(data[:,col_num].shape)
 
 	word_list = []
 	for i in range(len(new_col)):
-		word_list.append(new_col[i])
+		word_list.append(data[:,col_num][i])
 
 	word_list = np.array(word_list)
 
 	unique, counts = np.unique(word_list, return_counts=True)
 
 	mean, std = calc_mean_std(counts)
-	counts = z_score(counts, mean, std)
 
 	freq_dict = {}
 
 	for i in range(len(unique)):
-		freq_dict[unique[i]] = counts[i]
+		freq_dict[unique[i]] = gaussian_dist(mean, std, counts[i])
 	
 	for i in range(len(new_col)):
 		freq_sum = 0
-		freq_sum += freq_dict[new_col[i]]
+		freq_sum += freq_dict[data[:,col_num][i]]
 		new_col[i] = freq_sum
 
 	return new_col / np.max(new_col)
@@ -83,11 +88,11 @@ def convert_list_column_to_continuous(data, col_num):
 	Returns provided data with specified column converted to continuous frequency variable.
 	This is basically a measure of how popular the words in the title/brandname/etc are in the overall dataset.
 	"""
-	new_col = data[:,col_num]
+	new_col = np.zeros(data[:,col_num].shape)
 
 	word_list = []
 	for i in range(len(new_col)):
-		for word in new_col[i]:
+		for word in data[:,col_num][i]:
 			word_list.append(word)
 
 	word_list = np.array(word_list)
@@ -100,11 +105,11 @@ def convert_list_column_to_continuous(data, col_num):
 	freq_dict = {}
 
 	for i in range(len(unique)):
-		freq_dict[unique[i]] = counts[i]
+		freq_dict[unique[i]] = gaussian_dist(mean, std, counts[i])
 	
 	for i in range(len(new_col)):
 		freq_sum = 0
-		for word in new_col[i]:
+		for word in data[:,col_num][i]:
 			try:
 				freq_sum += freq_dict[word]
 			except:
